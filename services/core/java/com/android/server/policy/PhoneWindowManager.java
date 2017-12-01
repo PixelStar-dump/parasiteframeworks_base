@@ -6324,7 +6324,11 @@ public class PhoneWindowManager implements WindowManagerPolicy {
     }
 
     private void wakeUpFromWakeKey(long eventTime, int keyCode, boolean isDown) {
-        if (mWindowWakeUpPolicy.wakeUpFromKey(eventTime, keyCode, isDown)) {
+        wakeUpFromWakeKey(eventTime, keyCode, isDown, false);
+    }
+
+    private void wakeUpFromWakeKey(long eventTime, int keyCode, boolean isDown, boolean withProximity) {
+        if (mWindowWakeUpPolicy.wakeUpFromKey(eventTime, keyCode, isDown, withProximity)) {
             final boolean keyCanLaunchHome = keyCode == KEYCODE_HOME || keyCode == KEYCODE_POWER;
             // Start HOME with "reason" extra if sleeping for more than mWakeUpToLastStateTimeout
             if (shouldWakeUpWithHomeIntent() &&  keyCanLaunchHome) {
