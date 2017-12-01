@@ -110,6 +110,10 @@ class WindowWakeUpPolicy {
      *      executed; {@code false} otherwise.
      */
     boolean wakeUpFromKey(long eventTime, int keyCode, boolean isDown) {
+        wakeUpFromKey(eventTime, keyCode, isDown, false);
+    }
+
+    boolean wakeUpFromKey(long eventTime, int keyCode, boolean isDown, boolean withProximityCheck) {
         final boolean wakeAllowedDuringTheaterMode =
                 keyCode == KEYCODE_POWER
                         ? mAllowTheaterModeWakeFromPowerKey
@@ -122,10 +126,17 @@ class WindowWakeUpPolicy {
                 && mInputWakeUpDelegate.wakeUpFromKey(eventTime, keyCode, isDown)) {
             return true;
         }
-        wakeUp(
-                eventTime,
-                keyCode == KEYCODE_POWER ? WAKE_REASON_POWER_BUTTON : WAKE_REASON_WAKE_KEY,
-                keyCode == KEYCODE_POWER ? "POWER" : "KEY");
+        if (withProximityCheck) {
+            wakeUpWithProximityCheck(
+                    eventTime,
+                    keyCode == KEYCODE_POWER ? WAKE_REASON_POWER_BUTTON : WAKE_REASON_WAKE_KEY,
+                    keyCode == KEYCODE_POWER ? "POWER" : "KEY");
+        } else {
+            wakeUp(
+                    eventTime,
+                    keyCode == KEYCODE_POWER ? WAKE_REASON_POWER_BUTTON : WAKE_REASON_WAKE_KEY,
+                    keyCode == KEYCODE_POWER ? "POWER" : "KEY");
+        }
         return true;
     }
 
@@ -221,5 +232,10 @@ class WindowWakeUpPolicy {
     /** Wakes up {@link PowerManager}. */
     private void wakeUp(long wakeTime, @WakeReason int reason, String details) {
         mPowerManager.wakeUp(wakeTime, reason, "android.policy:" + details);
+    }
+
+    /** Wakes up {@link PowerManager}. */
+    private void wakeUpWithProximityCheck(long wakeTime, @WakeReason int reason, String details) {
+        mPowerManager.wakeUpWithProximityCheck(wakeTime, reason, "android.policy:" + details);
     }
 }
