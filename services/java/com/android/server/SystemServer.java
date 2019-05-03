@@ -258,6 +258,9 @@ import com.android.server.custom.LineageHardwareService;
 // CustomGlobalActionsService
 import com.android.server.custom.globalactions.CustomGlobalActionsService;
 
+// LiveDisplay
+import com.android.server.custom.display.LiveDisplayService;
+
 /**
  * Entry point to {@code system_server}.
  */
@@ -2684,6 +2687,11 @@ public final class SystemServer implements Dumpable {
             // CustomGlobalActionsService
             t.traceBegin("StartCustomGlobalActionsService");
             mSystemServiceManager.startService(CustomGlobalActionsService.class);
+            t.traceEnd();
+
+            // LiveDisplay
+            t.traceBegin("StartLiveDisplayService");
+            mSystemServiceManager.startService(LiveDisplayService.class);
             t.traceEnd();
         }
 
