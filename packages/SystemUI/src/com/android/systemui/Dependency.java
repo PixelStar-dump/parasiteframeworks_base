@@ -61,6 +61,8 @@ import com.android.systemui.statusbar.policy.BluetoothController;
 import com.android.systemui.statusbar.policy.DeviceProvisionedController;
 import com.android.systemui.statusbar.policy.FlashlightController;
 import com.android.systemui.statusbar.window.StatusBarWindowController;
+import com.android.systemui.statusbar.policy.KeyguardStateController;
+import com.android.systemui.statusbar.policy.TaskHelper;
 import com.android.systemui.tuner.TunablePadding.TunablePaddingService;
 import com.android.systemui.tuner.TunerService;
 
@@ -136,6 +138,7 @@ public class Dependency {
     @Inject Lazy<BroadcastDispatcher> mBroadcastDispatcher;
     @Inject Lazy<BluetoothController> mBluetoothController;
     @Inject Lazy<FlashlightController> mFlashlightController;
+    @Inject Lazy<KeyguardStateController> mKeyguardMonitor;
     @Inject Lazy<KeyguardUpdateMonitor> mKeyguardUpdateMonitor;
     @Inject Lazy<DeviceProvisionedController> mDeviceProvisionedController;
     @Inject Lazy<PluginManager> mPluginManager;
@@ -176,6 +179,7 @@ public class Dependency {
     @Inject Lazy<DialogTransitionAnimator> mDialogTransitionAnimatorLazy;
     @Inject Lazy<UserTracker> mUserTrackerLazy;
     @Inject Lazy<StatusBarWindowController> mStatusBarWindowControllerLazy;
+    @Inject Lazy<TaskHelper> mTaskHelper;
 
     @Inject
     public Dependency() {
@@ -193,6 +197,7 @@ public class Dependency {
         mProviders.put(BroadcastDispatcher.class, mBroadcastDispatcher::get);
         mProviders.put(BluetoothController.class, mBluetoothController::get);
         mProviders.put(FlashlightController.class, mFlashlightController::get);
+        mProviders.put(KeyguardStateController.class, mKeyguardMonitor::get);
         mProviders.put(KeyguardUpdateMonitor.class, mKeyguardUpdateMonitor::get);
         mProviders.put(DeviceProvisionedController.class, mDeviceProvisionedController::get);
         mProviders.put(PluginManager.class, mPluginManager::get);
@@ -220,6 +225,7 @@ public class Dependency {
         mProviders.put(NotificationListener.class, mNotificationListener::get);
         mProviders.put(SysUiState.class, mSysUiStateFlagsContainer::get);
         mProviders.put(CommandQueue.class, mCommandQueue::get);
+        mProviders.put(TaskHelper.class, mTaskHelper::get);
         mProviders.put(UiEventLogger.class, mUiEventLogger::get);
         mProviders.put(FeatureFlags.class, mFeatureFlagsLazy::get);
         mProviders.put(StatusBarContentInsetsProvider.class, mContentInsetsProviderLazy::get);
