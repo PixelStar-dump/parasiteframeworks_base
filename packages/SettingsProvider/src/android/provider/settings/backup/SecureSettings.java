@@ -268,5 +268,6 @@ public class SecureSettings {
         Settings.Secure.STYLUS_POINTER_ICON_ENABLED,
         Settings.Secure.CAMERA_EXTENSIONS_FALLBACK,
         Settings.Secure.VISUAL_QUERY_ACCESSIBILITY_DETECTION_ENABLED
+        Settings.Secure.SYSTEM_BLACK_THEME,
     };
 }
