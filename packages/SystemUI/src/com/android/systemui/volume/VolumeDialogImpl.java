@@ -316,6 +316,9 @@ public class VolumeDialogImpl implements VolumeDialog, Dumpable,
     // Variable to track the default row with which the panel is initially shown
     private VolumeRow mDefaultRow = null;
 
+    // Variable to track the default row with which the panel is initially shown
+    private VolumeRow mDefaultRow = null;
+
     public VolumeDialogImpl(
             Context context,
             VolumeDialogController volumeDialogController,
