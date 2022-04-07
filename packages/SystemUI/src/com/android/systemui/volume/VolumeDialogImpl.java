@@ -96,6 +96,7 @@ import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityManager;
 import android.view.accessibility.AccessibilityNodeInfo;
 import android.view.animation.DecelerateInterpolator;
+import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -295,6 +296,11 @@ public class VolumeDialogImpl implements VolumeDialog, Dumpable,
 
     private int mWindowGravity;
 
+    // Variable to track the default row with which the panel is initially shown
+    private VolumeRow mDefaultRow = null;
+
+    private FrameLayout mRoundedBorderBottom;
+
     @VisibleForTesting
     final int mVolumeRingerIconDrawableId = R.drawable.ic_speaker_on;
     @VisibleForTesting
@@ -309,9 +315,6 @@ public class VolumeDialogImpl implements VolumeDialog, Dumpable,
     private int mDialogTimeoutMillis;
     private final VibratorHelper mVibratorHelper;
     private final com.android.systemui.util.time.SystemClock mSystemClock;
-
-    // Variable to track the default row with which the panel is initially shown
-    private VolumeRow mDefaultRow = null;
 
     // Variable to track the default row with which the panel is initially shown
     private VolumeRow mDefaultRow = null;
@@ -707,6 +710,8 @@ public class VolumeDialogImpl implements VolumeDialog, Dumpable,
         mSettingsView = mDialog.findViewById(R.id.settings_container);
         mSettingsIcon = mDialog.findViewById(R.id.settings);
 <<<<<<< HEAD
+        mRoundedBorderBottom = mDialog.findViewById(R.id.rounded_border_bottom);
+
         mRoundedBorderBottom = mDialog.findViewById(R.id.rounded_border_bottom);
 
         if (isWindowGravityLeft()) {
@@ -1258,10 +1263,13 @@ public class VolumeDialogImpl implements VolumeDialog, Dumpable,
     }
 
     private void initSettingsH(int lockTaskModeState) {
+        final boolean showSettings = mDeviceProvisionedController.isCurrentUserSetup()
+                && lockTaskModeState == LOCK_TASK_MODE_NONE;
+        if (mRoundedBorderBottom != null) {
+            mRoundedBorderBottom.setVisibility(!showSettings ? VISIBLE : GONE);
+        }
         if (mSettingsView != null) {
-            mSettingsView.setVisibility(
-                    mDeviceProvisionedController.isCurrentUserSetup() &&
-                            lockTaskModeState == LOCK_TASK_MODE_NONE ? VISIBLE : GONE);
+            mSettingsView.setVisibility(showSettings ? VISIBLE : GONE);
         }
         if (mSettingsIcon != null) {
             mSettingsIcon.setOnClickListener(v -> {
