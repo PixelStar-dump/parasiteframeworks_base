@@ -13108,6 +13108,13 @@ public final class Settings {
         public static final String STYLUS_POINTER_ICON_ENABLED = "stylus_pointer_icon_enabled";
 
         /**
+         * Control whether to spoof current status of storage encryption.
+         * @hide
+         */
+        @Readable
+        public static final String SPOOF_STORAGE_ENCRYPTION_STATUS = "spoof_storage_encryption_status";
+
+        /**
          * What happens when the user presses the Home button when the
          * phone is ringing.<br/>
          * <b>Values:</b><br/>
