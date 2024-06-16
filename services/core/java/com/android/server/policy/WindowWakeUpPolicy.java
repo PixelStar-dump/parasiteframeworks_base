@@ -110,7 +110,7 @@ class WindowWakeUpPolicy {
      *      executed; {@code false} otherwise.
      */
     boolean wakeUpFromKey(long eventTime, int keyCode, boolean isDown) {
-        wakeUpFromKey(eventTime, keyCode, isDown, false);
+        return wakeUpFromKey(eventTime, keyCode, isDown, false);
     }
 
     boolean wakeUpFromKey(long eventTime, int keyCode, boolean isDown, boolean withProximityCheck) {
