@@ -71,7 +71,7 @@ public class LockoutFrameworkImpl implements LockoutTracker {
         void onLockoutReset(int userId);
     }
 
-    private final Context mContext;
+    private Context mContext;
     private final LockoutResetCallback mLockoutResetCallback;
     private final SparseBooleanArray mTimedLockoutCleared;
     private final SparseIntArray mFailedAttempts;
