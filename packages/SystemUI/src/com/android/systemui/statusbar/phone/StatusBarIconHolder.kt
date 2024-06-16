@@ -100,7 +100,7 @@ open class StatusBarIconHolder private constructor() {
         /** Only applicable to [BindableIconHolder] */
         const val TYPE_BINDABLE = 5
 
-        const val TYPE_BINDABLE = 42
+        const val TYPE_NETWORK_TRAFFIC = 42
     
         @JvmStatic
         fun fromNetworkTraffic(): StatusBarIconHolder {
