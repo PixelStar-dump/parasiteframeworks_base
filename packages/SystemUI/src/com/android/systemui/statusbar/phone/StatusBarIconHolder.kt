@@ -105,7 +105,7 @@ open class StatusBarIconHolder private constructor() {
         @JvmStatic
         fun fromNetworkTraffic(): StatusBarIconHolder {
             val holder = StatusBarIconHolder()
-            holder.mType = TYPE_NETWORK_TRAFFIC
+            holder.type = TYPE_NETWORK_TRAFFIC
             return holder
         }
 
