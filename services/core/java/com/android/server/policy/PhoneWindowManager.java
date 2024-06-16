@@ -6468,7 +6468,7 @@ public class PhoneWindowManager implements WindowManagerPolicy {
     }
 
     private void wakeUpFromWakeKey(long eventTime, int keyCode, boolean isDown) {
-        wakeUpFromWakeKey(eventTime, keyCode,　isDown, false);
+        wakeUpFromWakeKey(eventTime, keyCode, isDown, false);
     }
 
     private void wakeUpFromWakeKey(long eventTime, int keyCode, boolean isDown, boolean withProximity) {
