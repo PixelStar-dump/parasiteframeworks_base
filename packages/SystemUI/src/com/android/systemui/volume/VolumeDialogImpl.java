@@ -57,6 +57,7 @@ import android.content.res.ColorStateList;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
+import android.database.ContentObserver;
 import android.graphics.Color;
 import android.graphics.Outline;
 import android.graphics.PixelFormat;
@@ -75,8 +76,8 @@ import android.os.Looper;
 import android.os.Message;
 import android.os.SystemClock;
 import android.os.Trace;
+import android.os.UserHandle;
 import android.os.VibrationEffect;
-import static android.view.HapticFeedbackConstants.CLOCK_TICK;
 import android.provider.Settings;
 import android.provider.Settings.Global;
 import android.text.InputFilter;
@@ -326,6 +327,38 @@ public class VolumeDialogImpl implements VolumeDialog, Dumpable,
 
     private FrameLayout mRoundedBorderBottom;
 
+    private boolean mHapticsEnabled = true;
+
+    private final SettingsObserver mSettingsObserver = new SettingsObserver();
+    private class SettingsObserver extends ContentObserver {
+        SettingsObserver() {
+            super(mHandler);
+        }
+
+        void observe() {
+            mContext.getContentResolver().registerContentObserver(
+                    Settings.System.getUriFor(Settings.System.VOLUME_SLIDER_HAPTIC_FEEDBACK),
+                    false, this, UserHandle.USER_ALL);
+        }
+
+        void stop() {
+            mContext.getContentResolver().unregisterContentObserver(this);
+        }
+
+        @Override
+        public void onChange(boolean selfChange) {
+            update();
+        }
+
+        void update() {
+            mHapticsEnabled = Settings.System.getInt(mContext.getContentResolver(),
+                    Settings.System.VOLUME_SLIDER_HAPTIC_FEEDBACK, 1) == 1;
+            mHandler.post(() -> {
+                mControllerCallbackH.onConfigurationChanged();
+            });
+        }
+    }
+
     public VolumeDialogImpl(
             Context context,
             VolumeDialogController volumeDialogController,
@@ -391,6 +424,11 @@ public class VolumeDialogImpl implements VolumeDialog, Dumpable,
             };
         }
 
+        if (!mShowActiveStreamOnly) {
+            mSettingsObserver.observe();
+            mSettingsObserver.update();
+        }
+
         initDimens();
 
         mOrientation = mContext.getResources().getConfiguration().orientation;
@@ -450,6 +488,7 @@ public class VolumeDialogImpl implements VolumeDialog, Dumpable,
         if (mDevicePostureController != null) {
             mDevicePostureController.removeCallback(mDevicePostureControllerCallback);
         }
+        if (!mShowActiveStreamOnly) mSettingsObserver.stop();
     }
 
     @Override
@@ -2460,7 +2499,7 @@ public class VolumeDialogImpl implements VolumeDialog, Dumpable,
         @Override
         public void onVolumeChangedFromKey() {
             VolumeRow activeRow = getActiveRow();
-            if (activeRow.mHapticPlugin != null) {
+            if (activeRow.mHapticPlugin != null && mHapticsEnabled) {
                 activeRow.mHapticPlugin.onKeyDown();
             }
         }
@@ -2570,7 +2609,7 @@ public class VolumeDialogImpl implements VolumeDialog, Dumpable,
             if (mRow.ss == null) return;
             if (getActiveRow().equals(mRow)
                     && mRow.slider.getVisibility() == VISIBLE
-                    && mRow.mHapticPlugin != null) {
+                    && mRow.mHapticPlugin != null && mHapticsEnabled) {
                 mRow.mHapticPlugin.onProgressChanged(seekBar, progress, fromUser);
                 if (!fromUser) {
                     // Consider a change from program as the volume key being continuously pressed
@@ -2597,11 +2636,6 @@ public class VolumeDialogImpl implements VolumeDialog, Dumpable,
                     Events.writeEvent(Events.EVENT_TOUCH_LEVEL_CHANGED, mRow.stream,
                             userLevel);
                 }
-            }
-            final boolean doVibrate = Settings.System.getInt(mContext.getContentResolver(),
-                    Settings.System.VOLUME_SLIDER_HAPTIC_FEEDBACK, 0) != 0;
-            if (doVibrate) {
-                seekBar.performHapticFeedback(CLOCK_TICK);
             }
         }
 
