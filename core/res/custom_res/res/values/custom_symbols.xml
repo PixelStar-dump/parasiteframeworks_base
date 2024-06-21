@@ -121,6 +121,7 @@
     <!-- Define device configs on boot -->
     <java-symbol type="array" name="global_device_configs_override" />
     <java-symbol type="array" name="device_configs_override" />
+    <java-symbol type="array" name="device_configs_propertyToKeep" />
 
     <!-- Title & summary of notification letting users know that battery saver is now on -->
     <java-symbol type="string" name="battery_saver_on_notification_title" />

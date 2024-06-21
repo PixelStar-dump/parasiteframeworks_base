@@ -20725,8 +20725,10 @@ public final class Settings {
         public static boolean setStrings(@NonNull String namespace,
                 @NonNull Map<String, String> keyValues)
                 throws DeviceConfig.BadConfigException {
+            final List<String> backup = DeviceConfigUtils.createKeepValueBackup(namespace);
             boolean result = setStrings(getContentResolver(), namespace, keyValues);
             DeviceConfigUtils.setDefaultProperties(namespace, null);
+            DeviceConfigUtils.restoreKeepValueBackup(backup);
             return result;
         }
 

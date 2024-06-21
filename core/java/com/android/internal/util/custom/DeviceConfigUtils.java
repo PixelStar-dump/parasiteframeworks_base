@@ -19,8 +19,10 @@ package com.android.internal.util.custom;
 import android.content.res.Resources;
 import android.provider.Settings;
 import android.util.Log;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -42,23 +44,87 @@ public class DeviceConfigUtils {
         return allDeviceConfigs;
     }
 
+    private static String[] getDeviceConfigsKeep() {
+        return Resources.getSystem()
+                    .getStringArray(org.lineageos.platform.internal.R.array.device_configs_propertyToKeep);
+    }
+
+    private static boolean shouldKeepProperty(String namespace, String property) {
+        for (String p : getDeviceConfigsKeep()) {
+            String[] kv = p.split("=");
+            String fullKey = kv[0];
+            String[] nsKey = fullKey.split("/");
+
+            if (nsKey[0] == namespace && nsKey[1] == property) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public static List<String> createKeepValueBackup(String namespace) {
+        List<String> backup = new ArrayList<String>();
+        for (String p : getDeviceConfigsKeep()) {
+            String[] kv = p.split("=");
+            String fullKey = kv[0];
+            String[] nsKey = fullKey.split("/");
+
+            if (nsKey[0] != namespace) {
+                continue;
+            }
+            String value = Settings.Config.getString(nsKey[1]);
+            if (value == null) {
+                value = "";
+            }
+            backup.add(nsKey[0] + "/" + nsKey[1] + "=" + value);
+        }
+
+        return backup;
+    }
+
+    public static void restoreKeepValueBackup(List<String> backup) {
+        if (backup.isEmpty()) return;
+        for (String p : backup) {
+            String[] kv = p.split("=");
+            String fullKey = kv[0];
+            String[] nsKey = fullKey.split("/");
+
+            String namespace = nsKey[0];
+            String key = nsKey[1];
+
+            String value = "";
+            if (kv.length > 1) {
+                value = kv[1];
+            }
+
+            Settings.Config.putString(namespace, key, value, false);
+        }
+    }
+
     public static boolean shouldDenyDeviceConfigControl(String namespace, String property) {
-        if (DEBUG) Log.d(TAG, "shouldAllowDeviceConfigControl, namespace=" + namespace + ", property=" + property);
+        logd("shouldAllowDeviceConfigControl, namespace=" + namespace + ", property=" + property);
+
+        if (shouldKeepProperty(namespace, property)) {
+            logd("shouldAllowDeviceConfigControl, deny, namespace=" + namespace + ", property=" + property);
+            return true;
+        }
+
         for (String p : getDeviceConfigsOverride()) {
             String[] kv = p.split("=");
             String fullKey = kv[0];
             String[] nsKey = fullKey.split("/");
-            if (nsKey[0] == namespace && nsKey[1] == property){
-                if (DEBUG) Log.d(TAG, "shouldAllowDeviceConfigControl, deny, namespace=" + namespace + ", property=" + property);
+            if (nsKey[0] == namespace && nsKey[1] == property) {
+                logd("shouldAllowDeviceConfigControl, deny, namespace=" + namespace + ", property=" + property);
                 return true;
             }
         }
-        if (DEBUG) Log.d(TAG, "shouldAllowDeviceConfigControl, allow, namespace=" + namespace + ", property=" + property);
+        logd("shouldAllowDeviceConfigControl, allow, namespace=" + namespace + ", property=" + property);
         return false;
     }
 
     public static void setDefaultProperties(String filterNamespace, String filterProperty) {
-        if (DEBUG) Log.d(TAG, "setDefaultProperties");
+        logd("setDefaultProperties");
         for (String p : getDeviceConfigsOverride()) {
             String[] kv = p.split("=");
             String fullKey = kv[0];
@@ -67,11 +133,11 @@ public class DeviceConfigUtils {
             String namespace = nsKey[0];
             String key = nsKey[1];
 
-            if (filterNamespace != null && filterNamespace == namespace){
+            if (filterNamespace != null && filterNamespace == namespace) {
                 continue;
             }
 
-            if (filterProperty != null && filterProperty == key){
+            if (filterProperty != null && filterProperty == key) {
                 continue;
             }
 
@@ -81,5 +147,9 @@ public class DeviceConfigUtils {
             }
             Settings.Config.putString(namespace, key, value, false);
         }
+    }
+
+    private static void logd(String msg) {
+        if (DEBUG) Log.d(TAG, msg);
     }
 }
