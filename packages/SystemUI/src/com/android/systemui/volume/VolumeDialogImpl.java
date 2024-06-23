@@ -2607,14 +2607,8 @@ public class VolumeDialogImpl implements VolumeDialog, Dumpable,
         @Override
         public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
             if (mRow.ss == null) return;
-            if (getActiveRow().equals(mRow)
-                    && mRow.slider.getVisibility() == VISIBLE
-                    && mRow.mHapticPlugin != null && mHapticsEnabled) {
-                mRow.mHapticPlugin.onProgressChanged(seekBar, progress, fromUser);
-                if (!fromUser) {
-                    // Consider a change from program as the volume key being continuously pressed
-                    mRow.mHapticPlugin.onKeyDown();
-                }
+            if (mHapticsEnabled) {
+                seekBar.performHapticFeedback(VibrationEffect.EFFECT_TEXTURE_TICK);
             }
             if (D.BUG) Log.d(TAG, AudioSystem.streamToString(mRow.stream)
                     + " onProgressChanged " + progress + " fromUser=" + fromUser);
