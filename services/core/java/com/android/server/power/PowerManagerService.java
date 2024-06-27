@@ -1527,15 +1527,9 @@ public final class PowerManagerService extends SystemService
         resolver.registerContentObserver(Settings.System.getUriFor(
                 Settings.System.NAVIGATION_BAR_SHOW),
                 false, mSettingsObserver, UserHandle.USER_ALL);
-<<<<<<< HEAD
-=======
-        resolver.registerContentObserver(Settings.Global.getUriFor(
-                Settings.Global.WAKE_WHEN_PLUGGED_OR_UNPLUGGED),
-                false, mSettingsObserver, UserHandle.USER_ALL);
         resolver.registerContentObserver(Settings.System.getUriFor(
                 Settings.System.PROXIMITY_ON_WAKE),
                 false, mSettingsObserver, UserHandle.USER_ALL);
->>>>>>> 265cc0491cf4 (PowerManager: Add proximity check on wake)
 
         // Register for broadcasts from other components of the system.
         IntentFilter filter = new IntentFilter();
