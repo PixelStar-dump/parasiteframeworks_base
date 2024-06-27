@@ -635,14 +635,9 @@ public class PhoneWindowManager implements WindowManagerPolicy {
     boolean mIsFocusPressed;
     boolean mIsLongPress;
 
-<<<<<<< HEAD
-=======
-    boolean mVolumeAnswerCall;
-
     // Click volume down + power for partial screenshot
     boolean mClickPartialScreenshot;
 
->>>>>>> c20b20f6ecbc (Implement click to take partial screenshot [1/3])
     private boolean mPendingKeyguardOccluded;
     private boolean mKeyguardOccludedChanged;
 
