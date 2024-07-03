@@ -334,12 +334,6 @@ public class VolumeDialogImpl implements VolumeDialog, Dumpable,
     private final VibratorHelper mVibratorHelper;
     private final com.android.systemui.util.time.SystemClock mSystemClock;
 
-    // Variable to track the default row with which the panel is initially shown
-    private VolumeRow mDefaultRow = null;
-
-    // Variable to track the default row with which the panel is initially shown
-    private VolumeRow mDefaultRow = null;
-
     public VolumeDialogImpl(
             Context context,
             VolumeDialogController volumeDialogController,
